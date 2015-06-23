@@ -1,0 +1,20 @@
+<template name="inputBlock">{{#with addContext}}
+  <div class="input-block {{#if validationError}}error{{/if}}">
+    <label for="{{inputId}}">{{label}}</label>
+    {{#if Template.contentBlock}}
+      {{> Template.contentBlock}}
+    {{else}}
+      <input type="text" class="{{inputElmClass}}" />
+    {{/if}}
+    {{#if validationError}}
+      {{#if errorTemplate}}
+        {{> Template.dynamic template=errorTemplate}}
+      {{else}}
+        <span class="error">
+          {{validationError}}
+        </span>
+      {{/if}}
+    {{/if}}
+  </div>
+{{/with}}</template>
+
