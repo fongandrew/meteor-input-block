@@ -29,8 +29,27 @@ InputBlock = {
     elms.each(function(index, elm) {
       elm = $(elm);
       var propName = elm.attr(self.dataAttr);
+      var type = elm.attr('type');
+      
+      // Ignore unchecked radios / checkboxes
+      if (_.contains(['radio', 'checkbox'], type) && !elm.prop('checked')) {
+        return; 
+      }
+
       var val = elm.val();
-      ret[propName] = val;
+
+      // Handle multiple return parameters
+      if (ret[propName]) {
+        if (_.isArray(ret[propName])) {
+          ret[propName].push(val);
+        }
+        else {
+          var oldVal = ret[propName];
+          ret[propName] = [oldVal, val];
+        }
+      } else {
+        ret[propName] = val;
+      }
     });
     
     return ret;
