@@ -3,10 +3,9 @@ InputBlock = {
   errorTemplate: "",  // Change to name of template if you want a custom error
                       // template to display for validation errors
 
-  inputElmClass: "js-ib-input", // Used to identify our input elements
-
   dataAttr: "data-prop-name"   // Used to identify which property on schema
-                               // an element corresponds to
+                               // an element corresponds to. If not provided,
+                               // defaults to an input's name
 };
 
 (function() {
@@ -20,7 +19,10 @@ InputBlock = {
    */
   InputBlock.getObj = function(template, selector) {
     var self = this;
-    var elms = template.$('.' + self.inputElmClass);
+    var inputs = template.$('input');
+    var selects = template.$('select');
+    var textareas = template.$('textarea');
+    var elms = inputs.add(selects).add(textareas);
     if (selector) {
       elms = elms.$(selector);
     }
@@ -28,7 +30,7 @@ InputBlock = {
     var ret = {};
     elms.each(function(index, elm) {
       elm = $(elm);
-      var propName = elm.attr(self.dataAttr);
+      var propName = elm.attr(self.dataAttr) || elm.attr('name');
       var type = elm.attr('type');
       
       // Ignore unchecked radios / checkboxes
@@ -70,17 +72,17 @@ InputBlock = {
     delete inputAttrs.schemaContext;
     delete inputAttrs.altError;
 
-    // Add id, name, and class attributes
+    // Add id, name attributes
     inputAttrs.id = this._inputId;
-    inputAttrs.name = this._inputId;
-    if (inputAttrs.class) { // Override class should not remove inputElmClass
-      inputAttrs.class += " " + InputBlock.inputElmClass;
-    }
+    inputAttrs.name = this.data.propName;
     inputAttrs[InputBlock.dataAttr] = this.data.propName;
 
-    // Actually assign to element
-    var inputElm = this.$('.' + InputBlock.inputElmClass).first();
-    inputElm.attr(inputAttrs);
+    // Actually assign to element(s)
+    var inputs = this.$('input');
+    var selects = this.$('select');
+    var textareas = this.$('textarea');
+    var elm = inputs.add(selects).add(textareas).first();
+    elm.attr(inputAttrs);
   });
 
   Template.inputBlock.helpers({
@@ -95,8 +97,7 @@ InputBlock = {
         inputId: instance._inputId,
         label: simpleSchema.label(propName),
         validationError: this.altError || context.keyErrorMessage(propName),
-        errorTemplate: InputBlock.errorTemplate,
-        inputElmClass: InputBlock.inputElmClass
+        errorTemplate: InputBlock.errorTemplate
       }, this);
     }
   });
