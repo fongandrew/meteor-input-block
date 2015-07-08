@@ -1,8 +1,9 @@
 Package.describe({
   name: 'fongandrew:input-block',
   version: '0.1.0',
-  summary: 'Helper for showing SimpleSchema validation errors on forms. ' +
-           'Lightweight alternative to autoform.'
+  summary: 'SimpleSchema form helpers, lightweight alternative to some ' + 
+           'parts of autoform.',
+  git: 'https://github.com/fongandrew/meteor-input-block.git'
 });
 
 Package.onUse(function(api) {
